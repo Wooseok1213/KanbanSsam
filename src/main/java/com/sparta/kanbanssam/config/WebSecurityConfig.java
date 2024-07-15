@@ -87,7 +87,7 @@ public class WebSecurityConfig {
         http
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/users/view/login-page")
-                        .defaultSuccessUrl("/main-page", true)
+                        .defaultSuccessUrl("/boards/boardList", true)
                         .permitAll()
                 );
 

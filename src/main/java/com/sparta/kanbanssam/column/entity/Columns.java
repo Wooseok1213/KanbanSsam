@@ -50,4 +50,16 @@ public class Columns {
     public void update(ColumnRequestDto requestDto) {
         this.name = requestDto.getName();
     }
+
+    /**
+     * 컬럼 순서 이동
+     * @param orders
+     * @param board
+     */
+    public void updateOrders(Long orders, Board board) {
+        this.board = board;
+        this.orders = orders;
+        // 로그 추가
+        System.out.println("Updated column: " + this.id + ", new order: " + this.orders);
+    }
 }

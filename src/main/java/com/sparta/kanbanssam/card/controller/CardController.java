@@ -1,6 +1,7 @@
 package com.sparta.kanbanssam.card.controller;
 
 import com.sparta.kanbanssam.card.dto.CardListByColumnsResponseDto;
+import com.sparta.kanbanssam.card.dto.CardListByUserResponseDto;
 import com.sparta.kanbanssam.card.dto.CardRequestDto;
 import com.sparta.kanbanssam.card.dto.CardResponseDto;
 import com.sparta.kanbanssam.card.service.CardService;
@@ -134,11 +135,17 @@ public class CardController {
         return ResponseEntity.ok(responseDto);
     }
 
-//    @ResponseBody
-//    @GetMapping("/board/{boardId}/cards/byUser")
-//    public ResponseEntity<?> getCardListByUser(@PathVariable Long boardId) {
-//
-//    }
+    /**
+     * 사용자 별 카드 목록 조회
+     * @param boardId 보드 ID
+     * @return 카드 목록
+     */
+    @ResponseBody
+    @GetMapping("/boards/{boardId}/cards/byUser")
+    public ResponseEntity<?> getCardListByUser(@PathVariable Long boardId) {
+        List<CardListByUserResponseDto> responseDtos = cardService.getCardListByUser(boardId);
+        return ResponseEntity.ok(responseDtos);
+    }
 
     /**
      * view
@@ -154,8 +161,9 @@ public class CardController {
         model.addAttribute("cardListByColumn", cardListByColumn);
         model.addAttribute("boardId", boardId);
 
-//        List<CardResponseDto> cardListByBoard = cardService.getCardListByBoard(boardId);
-//        model.addAttribute("cardListByBoard", cardListByBoard);
+        List<CardListByUserResponseDto> cardListByUser = cardService.getCardListByUser(boardId);
+        model.addAttribute("cardListByUser", cardListByUser);
+
         return "/card/cardList";
     }
 

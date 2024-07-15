@@ -39,24 +39,23 @@ public class UserController {
     /**
      * 회원가입 API
      * @param requestDto 회원가입 내용
-     * @return
+     * @return ResponseEntity: 응답 코드, 응답 메시지
      */
     @PostMapping("")
     public ResponseEntity<?> signUp(@Valid @RequestBody UserSignUpRequestDto requestDto) {
-        log.info("찍힐까요!?");
         userService.signUp(requestDto);
-        return ResponseEntity.ok("응답부 추후 수정");
+        return ResponseEntity.ok("회원가입 완료");
     }
 
     /**
      * 회원조회 API
-     * @param requestDto 초대할 사용자 이메일, userDetails
+//     * @param requestDto 초대할 사용자 이메일, userDetails
      * @return userResponseDto 초대할 사용자 이메일, 이름
      */
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<?> getUsers(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                      @RequestBody EmailRequestDto requestDto) {
-        UserResponseDto userResponseDto = userService.getUsersByEmail(userDetails, requestDto.getEmail());
+                                      String email) {
+        UserResponseDto userResponseDto = userService.getUsersByEmail(userDetails, email);
         return ResponseEntity.ok(userResponseDto);
     }
 

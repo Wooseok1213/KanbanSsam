@@ -1,5 +1,6 @@
 package com.sparta.kanbanssam.user.entity;
 
+import com.sparta.kanbanssam.card.entity.Card;
 import com.sparta.kanbanssam.comment.entity.Comment;
 import com.sparta.kanbanssam.common.entity.Timestamped;
 import com.sparta.kanbanssam.common.enums.ErrorType;
@@ -40,6 +41,9 @@ public class User extends Timestamped {
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "user")
+    private List<Card> cardList;
 
 
 

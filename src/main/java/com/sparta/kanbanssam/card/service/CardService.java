@@ -3,6 +3,7 @@ package com.sparta.kanbanssam.card.service;
 import com.sparta.kanbanssam.board.entity.Board;
 import com.sparta.kanbanssam.board.repository.BoardRepository;
 import com.sparta.kanbanssam.card.dto.CardListByColumnsResponseDto;
+import com.sparta.kanbanssam.card.dto.CardListByUserResponseDto;
 import com.sparta.kanbanssam.card.dto.CardRequestDto;
 import com.sparta.kanbanssam.card.dto.CardResponseDto;
 import com.sparta.kanbanssam.card.entity.Card;
@@ -96,7 +97,7 @@ public class CardService {
      */
     @Transactional
     public void updateCardOrders(Long columnId, List<Long> cardIdList) {
-        Columns columns = columnRepository.findById(columnId)
+        Columns columns = columnRepository.findByIdWithPessimisticLock(columnId)
                 .orElseThrow(()-> new CustomException(ErrorType.COLUMN_NOT_FOUND));
 
         for (int i = 1; i <= cardIdList.size(); i++) {
@@ -152,12 +153,24 @@ public class CardService {
     }
 
     /**
+     * 사용자 별 카드 목록 조회
+     * @param boardId 보드 ID
+     * @return 카드 목록
+     */
+    public List<CardListByUserResponseDto> getCardListByUser(Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(()-> new CustomException(ErrorType.NOT_FOUND_BOARD));
+
+        return cardRepository.getCardListByUserAtBoard(board);
+    }
+
+    /**
      * Id로 Card 엔티티 찾기
      * @param cardId 카드 ID
      * @return 카드 정보
      */
     public Card findCard(Long cardId) {
-        return cardRepository.findById(cardId)
+        return cardRepository.findByIdWithPessimisticLock(cardId)
                 .orElseThrow(()-> new CustomException(ErrorType.CARD_NOT_FOUND));
     }
 }

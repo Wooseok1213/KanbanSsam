@@ -12,55 +12,42 @@
     <link rel="stylesheet" href="/css/board.css">
     <script src="/js/auth.js"></script>
     <script src="/js/board.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("button[type='submit']").click(function(event) {
+                event.preventDefault();
+                $.ajax({
+                    url: '/users/logout',
+                    type: 'POST',
+                    success: function(response) {
+                        window.location.href = '/users/view/login-page';
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Logout failed:', error);
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
+
 <div class="board-container">
 
-<!--    <div th:each="boardList : ${boardList}"-->
-<!--         th:id="'column-'+${boardList.boardId}"-->
-<!--         class="board"></div>-->
-    <div class="board">
+    <h1><span id="user-name"></span>의 보드 목록</h1>
+    <button type="submit">Logout</button>
 
-
-<!--        <h1 th:text="${userName}">의 보드 목록</h1> -->
-        <h1>userName의 보드 목록</h1>
-
-        <div class="board-btn-container">
-
-<!--<button th:onclick="openUpdateBoardPopup([[${boardList.boardId}]], [[${boardList.getName()}]], [[${boardList.getIntroduction()}]])">Update Board</button>-->
-            <button>Update Board</button>
-
-<!--            <button th:onclick="deleteBoard([[${boardList.boardId}]])">Delete Board</button>-->
-            <button>Delete Board</button>
-        </div>
-
-        <div class="text">
-<!--            <span th:text="${boardList.getName()}"></span>-->
-            <span>보드 이름</span>
-        </div>
-        <div class="text">
-<!--            <span th:text="${boardList.getIntroduction()}"></span>-->
-            <span>한줄소개</span>
-        </div>
-
-<!--        <button th:onclick="|location.href='@{'/boards/'+${boardList.boardId}}+'/columns/cardList'+'|"-->
-<!--                type="button">상세</button>-->
-        <button type="button">상세</button>
-
-    </div>
+    <div class="board-list"></div>
 
     <div class="board-btn-container" style="float: right">
         <button onclick="openAddBoardPopup()">Add Board</button>
     </div>
-
 </div>
 
 <!-- 보드 추가 팝업 -->
 <div id="board-add-container" class="popup-container">
     <div class="popup" style="width:410px; height:auto">
-        <button id="board-close" class="close" onclick="closeAddBoardPopup()">
-            X
-        </button>
+        <button id="board-close" class="close" onclick="closeAddBoardPopup()">X</button>
         <h1>🗂 보드 추가하기</h1>
         <div id="board-input">
             <span>이름 : </span><input type="text" id="name" name="name" placeholder="보드 이름">
@@ -76,9 +63,7 @@
 <div id="board-update-container" class="popup-container">
     <div class="popup" style="width:410px; height:auto">
         <input type="hidden" id="update-board-id" value="">
-        <button id="update-board-close" class="close" onclick="closeUpdateBoardPopup()">
-            X
-        </button>
+        <button id="update-board-close" class="close" onclick="closeUpdateBoardPopup()">X</button>
         <h1>🗂 보드 수정하기</h1>
         <div id="update-board-input">
             <span>이름 : </span><input type="text" id="update-name" name="name" placeholder="보드 이름">
@@ -87,6 +72,24 @@
             <br/>
         </div>
         <button id="update-board-btn" class="cta2" onclick="updateBoard()">수정하기</button>
+    </div>
+</div>
+
+<!-- 보드 초대 팝업 -->
+<div id="board-invite-container" class="popup-container">
+    <div class="popup" style="width:410px; height:auto">
+        <input type="hidden" id="invite-board-id" value="">
+        <button id="invite-board-close" class="close" onclick="closeInviteBoardPopup()">X</button>
+        <h1>🗂 보드 초대하기</h1>
+        <div id="invite-board-input">
+            <span>email : </span><input type="email" id="invite-email" name="email" placeholder="이메일을 입력해주세요.">
+            <br/>
+            <button onclick="findUser()">Add</button>
+        </div>
+
+        <div class="invite-list"></div>
+
+        <button id="invite-board-btn" class="cta2" onclick="inviteBoard()">초대하기</button>
     </div>
 </div>
 

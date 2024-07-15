@@ -81,7 +81,34 @@
     </div>
 
     <div th:id="'user-'+${boardId}" class="user-container">
-        <span>user-container</span>
+        <div th:each="cardListByUser : ${cardListByUser}"
+             th:id="'user-'+${cardListByUser.guestId}"
+             class="user" style="float: left">
+
+            <h1 th:text="${cardListByUser.getGuestName()}"></h1>
+
+            <div th:each="cardList : ${cardListByUser.getCardList()}"
+                 th:id="'card-'+${cardList.getCardId()}"
+                 class="card">
+                <div class="text">
+                    <span th:text="${cardList.getTitle()}"></span>
+                </div>
+                <div class="text">
+                    <span>담당자 : </span><span th:text="${cardList.getResponsiblePerson()}"></span>
+                </div>
+                <button th:onclick="|location.href='@{'/cards/'+${cardList.getCardId()}}'|"
+                        type="button">상세</button>
+                <button th:onclick="deleteCard([[${cardList.getCardId()}]])"
+                        type="button">삭제</button>
+                <button th:onclick="openUpdateCardPopup(
+            [[${cardList.getCardId()}]],
+            [[${cardList.getTitle()}]],
+            [[${cardList.getResponsiblePerson()}]],
+            [[${cardList.getContent()}]],
+            [[${cardList.getDeadline}]])"
+                        type="button">수정</button>
+            </div>
+        </div>
     </div>
 </div>
 

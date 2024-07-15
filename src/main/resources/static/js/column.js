@@ -123,29 +123,35 @@ $(document).ready(function () {
             const boardId = columns.parentNode.id;
 
             const columnDivList = Array.from(columns.parentNode.querySelectorAll(".column"));
-            const columnIdList = columnDivList.map(e => e.id.slice(7));
+            const columnIdList = columnDivList.map(e => Number(e.id.slice(7)));
 
             console.log(boardId);
             console.log(columnIdList)
 
-            // updateColumnOrders(boardId, columnIdList);
+            updateColumnOrders(boardId, columnIdList);
         });
     });
 })
 
 // 컬럼 순서 이동 API 요청
 function updateColumnOrders(boardId, columnIdList) {
-    const data = {columnIdList};
+    const data = columnIdList;
+    const accessToken = getAccessToken();
 
-    // $.ajax({
-    //     type: 'PUT',
-    //     url: `/columns/${columnId}/cards/orders`,
-    //     contentType: 'application/json',
-    //     data: JSON.stringify(cardIdList),
-    //     success: function (response) {
-    //         console.log("success")
-    //     },error: err => {
-    //         alert(err.responseJSON.message);
-    //     }
-    // })
+    console.log("Sending data:", JSON.stringify(data)); // 로그 추가
+
+     $.ajax({
+         type: 'PUT',
+         url: `/boards/${boardId}/columns/orders`,
+         contentType: 'application/json',
+         beforeSend : function(xhr){
+             xhr.setRequestHeader("Authorization", accessToken);
+         },
+         data: JSON.stringify(data),
+         success: function (response) {
+             console.log("success")
+         },error: err => {
+             alert("error");
+         }
+     })
 }

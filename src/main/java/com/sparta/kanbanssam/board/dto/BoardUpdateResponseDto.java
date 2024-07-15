@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-
 public class BoardUpdateResponseDto {
 
     private String name; // 수정한 보드제목

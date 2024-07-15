@@ -1,5 +1,6 @@
 package com.sparta.kanbanssam.board.service;
 
+import com.sparta.kanbanssam.board.dto.BoardByGuestResponseDto;
 import com.sparta.kanbanssam.board.dto.BoardRequestDto;
 import com.sparta.kanbanssam.board.dto.BoardResponseDto;
 import com.sparta.kanbanssam.board.dto.BoardUpdateRequestDto;
@@ -44,6 +45,9 @@ public class BoardService {
                 .build();
 
         boardRepository.save(board);
+
+        Guest guest = new Guest(user, board);
+        guestRepository.save(guest);
 
         return new BoardResponseDto(board);
     }
@@ -97,11 +101,60 @@ public class BoardService {
         Board board = boardRepository.findById(boardId).orElseThrow(()
                 -> new CustomException(ErrorType.NOT_FOUND_BOARD));
         //userRole이 MANAGER인지 검증
-        checkUserRole(user);
+         checkUserRole(user);
         if (!board.getUser().getAccountId().equals(user.getAccountId())) {
             throw new CustomException(ErrorType.BOARD_ACCESS_FORBIDDEN);
         }
         boardRepository.delete(board);
+    }
+
+    @Transactional
+    // 유저초대
+    public Board inviteGuest(User user, Long boardId, List<String> emailList) {
+
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(()-> new CustomException(ErrorType.NOT_FOUND_BOARD));
+
+        board.validateAuthority(user);
+
+        List<User> usertList = emailList.stream()
+                .map(
+                        g -> userRepository.findByEmail(g)
+                                .orElseThrow(()-> new CustomException(ErrorType.NOT_FOUND_USER))
+                )
+                .toList();
+
+
+        List<Guest> guestList = usertList.stream()
+                .map(u -> new Guest(u, board))
+                .toList();
+
+        guestRepository.saveAll(guestList);
+
+        return board;
+
+//        User inviteUser = userRepository.findById(invitedUserId).orElseThrow(
+//                () -> new CustomException(ErrorType.NOT_FOUND_USER));
+//        Board board = boardRepository.findById(boardId).orElseThrow(()
+//                -> new CustomException(ErrorType.NOT_FOUND_BOARD));
+//        checkUserId(user, board);
+//        //초대된 유저인지 확인
+//        if (guestRepository.existsByUserId(invitedUserId)) {
+//            throw new CustomException(ErrorType.DUPLICATE_INVITE_USER);
+//        }
+//        Guest guest = new Guest(inviteUser, board);
+//        guestRepository.save(guest);
+//        return board;
+    }
+
+    // 게스트의 보드 목록 조회
+    public BoardByGuestResponseDto findAllBoardsByGuest(User user) {
+        List<BoardResponseDto> boardList = guestRepository.findAllByUser(user).stream()
+                .map(Guest::getBoard)
+                .map(BoardResponseDto::new)
+                .toList();
+
+        return new BoardByGuestResponseDto(user.getName(), boardList);
     }
 
     //UserRole 이 Manager 인지 검증하는 로직

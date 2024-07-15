@@ -2,6 +2,7 @@ package com.sparta.kanbanssam.column.service;
 
 import com.sparta.kanbanssam.board.entity.Board;
 import com.sparta.kanbanssam.board.repository.BoardRepository;
+import com.sparta.kanbanssam.card.entity.Card;
 import com.sparta.kanbanssam.column.dto.ColumnRequestDto;
 import com.sparta.kanbanssam.column.dto.ColumnResponseDto;
 import com.sparta.kanbanssam.column.entity.Columns;
@@ -14,12 +15,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ColumnService {
 
     private final ColumnRepository columnRepository;
     private final AuthorizationService authorizationService;
+    private final BoardRepository boardRepository;
 
     /**
      * 컬럼 생성
@@ -91,6 +95,25 @@ public class ColumnService {
         // 컬럼 작성자가 아닐 경우 예외처리(보드 매니저가 아닐경우)
         authorizationService.validateUserIsBoardManager(column.getBoard().getId(), user);
         columnRepository.delete(column);
+    }
+
+    /**
+     * 컬럼 순서 수정
+     * @param boardId 보드 ID
+     * @param columnIdList 이동한 보드의 컬럼ID 순번 목록
+     * @param user 회원정보
+     */
+    @Transactional
+    public void updateColumnOrders(Long boardId, List<Long> columnIdList, User user) {
+
+        // 컬럼 작성자가 아닐 경우 예외처리(보드 매니저가 아닐경우)
+        Board board =authorizationService.validateUserIsBoardManager(boardId, user);
+
+        for (int i = 1; i <= columnIdList.size(); i++) {
+            Columns column = getColumn(columnIdList.get(i-1));
+            column.updateOrders((long) i, board);
+            columnRepository.save(column);
+        }
     }
 
     /**

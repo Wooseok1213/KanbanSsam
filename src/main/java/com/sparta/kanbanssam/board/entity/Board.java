@@ -39,6 +39,9 @@ public class Board {
     @OneToMany(mappedBy = "board", orphanRemoval = true)
     private List<Columns> columnsList;
 
+    @OneToMany(mappedBy = "board", orphanRemoval = true)
+    private List<Guest> guestList;
+
     @Builder
     public Board(Long id, User user, String name, String introduction) {
         this.id = id;
@@ -53,7 +56,7 @@ public class Board {
     }
 
     public void validateAuthority(User user) {
-        if (!this.user.getId().equals(user.getId())) {
+        if (!this.user.getId().equals(user.getId()) && !UserRole.MANAGER.equals(user.getUserRole())) {
             throw new CustomException(ErrorType.BOARD_ACCESS_FORBIDDEN);
         }
     }

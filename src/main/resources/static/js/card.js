@@ -170,25 +170,66 @@ function addAllCardItem(card) {
 
 // 사용자 별 카드 목록 조회 API 요청
 function getCardListByUser() {
-    // $.ajax({
-    //     type: 'POST',
-    //     url: `/cards/${cardId}`,
-    //     contentType: 'application/json',
-    //     // Authorization: '',
-    //     data: JSON.stringify(data),
-    //     success: function (response) {
-    //         $('#card-add-container').removeClass('active');
-    //         alert('카드 수정 성공.');
-    //         window.location.reload();
-    //     },error: err => {
-    //         alert(err.responseJSON.message);
-    //     }
-    // })
+    const boardId = document.querySelector(".user-container").id.slice(5);
+
+    $.ajax({
+        type: 'GET',
+        url: `/boards/${boardId}/cards/byUser`,
+        success: function (response) {
+            for (let i = 0; i < response.length; i++) {
+                let card = response[i];
+                let tempHtml = addUserCardItem(card);
+                $('.all-container').append(tempHtml);
+            }
+        },error: err => {
+            alert(err.responseJSON.message);
+        }
+    })
 }
 
 // 사용자별 카드 목록 HTML 생성
-function addUserScheduleItem(schedule, type) {
-    return `<span>append<span/>`;
+function addUserCardItem(schedule, type) {
+    return `<div th:each="cardListByColumn : ${cardListByColumn}"
+             th:id="'user-'+${cardListByColumn.columnId}"
+             class="user">
+             <div >
+
+            <h1 th:text="${cardListByColumn.getColumnName()}"></h1>
+
+            <div class="column-btn-container">
+                <button th:onclick="openUpdateColumnPopup(
+            [[${cardListByColumn.columnId}]],
+            [[${cardListByColumn.getColumnName()}]])">Update Column</button>
+
+                <button th:onclick="deleteColumn([[${cardListByColumn.columnId}]])">Delete Column</button>
+            </div>
+
+            <div th:id="${cardListByColumn.columnId}"
+                 class="card-container">
+                <div th:each="cardList : ${cardListByColumn.getCardList()}"
+                     th:id="'card-'+${cardList.getCardId()}"
+                     class="card" draggable="true">
+                    <div class="text">
+                        <span th:text="${cardList.getTitle()}"></span>
+                    </div>
+                    <div class="text">
+                        <span>담당자 : </span><span th:text="${cardList.getResponsiblePerson()}"></span>
+                    </div>
+                    <button th:onclick="|location.href='@{'/cards/'+${cardList.getCardId()}}'|"
+                            type="button">상세</button>
+                    <button th:onclick="deleteCard([[${cardList.getCardId()}]])"
+                            type="button">삭제</button>
+                    <button th:onclick="openUpdateCardPopup(
+                [[${cardList.getCardId()}]],
+                [[${cardList.getTitle()}]],
+                [[${cardList.getResponsiblePerson()}]],
+                [[${cardList.getContent()}]],
+                [[${cardList.getDeadline}]])"
+                            type="button">수정</button>
+                </div>
+            </div>
+            <button th:onclick="openAddCardPopup([[${cardListByColumn.getColumnId()}]])">Add Card</button>
+        </div>`;
 }
 
 

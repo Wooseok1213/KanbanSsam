@@ -4,9 +4,13 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.kanbanssam.board.entity.Board;
+import com.sparta.kanbanssam.board.entity.Guest;
 import com.sparta.kanbanssam.card.dto.CardListByColumnsResponseDto;
+import com.sparta.kanbanssam.card.dto.CardListByUserResponseDto;
 import com.sparta.kanbanssam.card.dto.CardResponseDto;
+import com.sparta.kanbanssam.card.entity.Card;
 import com.sparta.kanbanssam.column.entity.Columns;
+import com.sparta.kanbanssam.user.entity.User;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -14,8 +18,10 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.sparta.kanbanssam.board.entity.QBoard.board;
+import static com.sparta.kanbanssam.board.entity.QGuest.guest;
 import static com.sparta.kanbanssam.card.entity.QCard.card;
 import static com.sparta.kanbanssam.column.entity.QColumns.columns;
+
 
 @RequiredArgsConstructor
 public class CardRepositoryQueryImpl implements CardRepositoryQuery {
@@ -43,6 +49,38 @@ public class CardRepositoryQueryImpl implements CardRepositoryQuery {
             responseDtoList.add(responseDto);
         }
         return responseDtoList;
+    }
+
+    @Override
+    public List<CardListByUserResponseDto> getCardListByUserAtBoard(Board board) {
+        List<User> guestList = jpaQueryFactory
+                .select(guest.user)
+                .from(guest)
+                .where(boardIdEq(board))
+                .orderBy(guest.id.asc())
+                .fetch();
+
+        return guestList.stream()
+                .map(
+                        user -> {
+                            return CardListByUserResponseDto.builder()
+                                    .guestId(user.getId())
+                                    .guestName(user.getName())
+                                    .cardList(
+                                            jpaQueryFactory
+                                                    .select(card)
+                                                    .from(card)
+                                                    .where(card.columns.board.eq(board))
+                                                    .where(card.user.eq(user))
+                                                    .fetch()
+                                                    .stream()
+                                                    .map(CardResponseDto::new)
+                                                    .toList()
+                                    )
+                                    .build();
+                        }
+                )
+                .toList();
     }
 
     @Override
