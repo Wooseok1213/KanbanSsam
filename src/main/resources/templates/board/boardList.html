@@ -12,23 +12,6 @@
     <link rel="stylesheet" href="/css/board.css">
     <script src="/js/auth.js"></script>
     <script src="/js/board.js"></script>
-    <script>
-        $(document).ready(function() {
-            $("button[type='submit']").click(function(event) {
-                event.preventDefault();
-                $.ajax({
-                    url: '/users/logout',
-                    type: 'POST',
-                    success: function(response) {
-                        window.location.href = '/users/view/login-page';
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Logout failed:', error);
-                    }
-                });
-            });
-        });
-    </script>
 </head>
 <body>
 

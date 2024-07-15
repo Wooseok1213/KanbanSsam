@@ -13,7 +13,7 @@
 <summary> ERD 보기 </summary>
 
 <p>
-<img src="https://teamsparta.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2Fd54afd9b-fc7c-4119-9a6f-9549bf963497%2FCopy_of_KanbanBoard.png?table=block&id=7b8986aa-b1b9-4371-8f44-9a8f9601fb8c&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=2000&userId=&cache=v2" width= 700px>
+<img src="https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F83c75a39-3aba-4ba4-a792-7aefe4b07895%2Ffc9adbfe-4e3f-4185-89da-7c9081f9d11c%2FKanbanBoard.png?table=block&id=d27d2750-1bd1-453c-9ac7-f7cf77ebd3ea&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=2000&userId=95d8eab1-9f5a-461f-9727-30614cb85d7a&cache=v2" width= 700px>
 </p>
 </details>
 

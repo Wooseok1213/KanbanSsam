@@ -249,3 +249,33 @@ function inviteBoard() {
         }
     })
 }
+
+// 로그아웃 API 요청
+function logout() {
+    const accessToken = getAccessToken();
+    const refreshToken = getRefreshToken();
+
+    $.ajax({
+        type: 'POST',
+        url: '/users/logout',
+        contentType: 'application/json',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("Authorization", accessToken);
+            xhr.setRequestHeader("RefreshToken", refreshToken);
+        },
+        success: function (response) {
+            alert('로그아웃 성공.');
+            // 로그아웃 후 로그인 페이지로 리다이렉션
+            window.location.href = '/users/view/login-page';
+        },
+        error: err => {
+            alert(err.responseJSON.message);
+        }
+    });
+}
+
+$(document).ready(function() {
+    $("button[type='submit']").on('click', function() {
+        logout();
+    });
+});

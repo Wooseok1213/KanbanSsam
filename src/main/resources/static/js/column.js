@@ -101,36 +101,40 @@ function deleteColumn(columnId) {
 }
 
 $(document).ready(function () {
-    // 순서 이동 (drog & drop)
-    const columns = document.querySelectorAll(".column");
+    if (moveColumnAuthority()) {
+        // 순서 이동 (drog & drop)
+        const columns = document.querySelectorAll(".column");
 
-    const columnContainer = document.querySelectorAll(".column-container");
-    columnContainer.forEach((columnContainer) => {
-        new Sortable(columnContainer, {
-            group: "column",
-            animation: 150,
-            ghostClass: "blue-background-class"
-        });
-    });
-
-    columns.forEach(columns => {
-        columns.addEventListener("dragstart", () => {
-            columns.classList.add("dragging");
+        const columnContainer = document.querySelectorAll(".column-container");
+        columnContainer.forEach((columnContainer) => {
+            new Sortable(columnContainer, {
+                group: "column",
+                animation: 150,
+                ghostClass: "blue-background-class"
+            });
         });
 
-        columns.addEventListener("dragend", () => {
-            columns.classList.remove("dragging");
-            const boardId = columns.parentNode.id;
+        columns.forEach(columns => {
+            columns.addEventListener("dragstart", () => {
+                columns.classList.add("dragging");
+            });
 
-            const columnDivList = Array.from(columns.parentNode.querySelectorAll(".column"));
-            const columnIdList = columnDivList.map(e => Number(e.id.slice(7)));
+            columns.addEventListener("dragend", () => {
+                columns.classList.remove("dragging");
 
-            console.log(boardId);
-            console.log(columnIdList)
+                const boardId = columns.parentNode.id;
 
-            updateColumnOrders(boardId, columnIdList);
+                const columnDivList = Array.from(columns.parentNode.querySelectorAll(".column"));
+                const columnIdList = columnDivList.map(e => Number(e.id.slice(7)));
+
+                console.log(boardId);
+                console.log(columnIdList)
+
+                updateColumnOrders(boardId, columnIdList);
+            });
         });
-    });
+    }
+
 })
 
 // 컬럼 순서 이동 API 요청
