@@ -15,17 +15,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJNQU5BR
 }
 
 ### 보드 수정
-PUT http://localhost:8080/boards/4
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJNQU5BR0VSIiwiZXhwIjoxNzIxMDI3NDc3LCJpYXQiOjE3MjEwMjM4Nzd9.mEQXOe9F-VVr1_g95Xvj1Q55W4R-fjjdmsPw0h7xblY
-
-{
-  "name":"보드 제목 수정2",
-  "introduction":"한줄 소개 수정2"
-}
-
-### 보드삭제
-DELETE http://localhost:8080/boards/4
+PUT http://localhost:8080/boards/{{boardId}}
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJNQU5BR0VSIiwiZXhwIjoxNzIxMDI3NDc3LCJpYXQiOjE3MjEwMjM4Nzd9.mEQXOe9F-VVr1_g95Xvj1Q55W4R-fjjdmsPw0h7xblY
 
@@ -35,6 +25,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJNQU5BR
 GET http://localhost:8080/boards
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MSIsImF1dGgiOiJNQU5BR0VSIiwiZXhwIjoxNzIxMDI3NDc3LCJpYXQiOjE3MjEwMjM4Nzd9.mEQXOe9F-VVr1_g95Xvj1Q55W4R-fjjdmsPw0h7xblY
 
+{
+  "name":"보드 제목 수정",
+  "introduction":"한줄 소개 수정"
+}
 
 ### 보드 선택 조회
 GET http://localhost:8080/boards/2

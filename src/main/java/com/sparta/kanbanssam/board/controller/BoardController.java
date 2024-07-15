@@ -8,10 +8,11 @@ import com.sparta.kanbanssam.board.service.BoardService;
 import com.sparta.kanbanssam.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/boards")
 @RequiredArgsConstructor
+@Slf4j
 public class BoardController {
 
     private final BoardService boardservice;
@@ -63,22 +65,32 @@ public class BoardController {
     }
 
 
-        //상품수정
-        @PutMapping("/{boardId}")
-        public ResponseEntity<?> updateBoard (@RequestBody BoardUpdateRequestDto requestDto,
-                @PathVariable Long boardId,
-                @AuthenticationPrincipal UserDetailsImpl userDetails){
-            Board board = boardservice.updateBoard(boardId, requestDto, userDetails.getUser());
-            BoardUpdateResponseDto reponseDto = new BoardUpdateResponseDto(board);
+    //상품수정
+    @PutMapping("/{boardId}")
+    public ResponseEntity<?> updateBoard(@RequestBody BoardUpdateRequestDto requestDto,
+                                         @PathVariable Long boardId,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Board board = boardservice.updateBoard(boardId, requestDto, userDetails.getUser());
+        BoardUpdateResponseDto reponseDto = new BoardUpdateResponseDto(board);
 
-            return ResponseEntity.ok(reponseDto);
-        }
-
-        //보드 삭제
-        @DeleteMapping("/{boardId}")
-        public ResponseEntity<?> deleteBoard (@AuthenticationPrincipal UserDetailsImpl userDetails,
-                @PathVariable Long boardId){
-            boardservice.deleteBoard(boardId, userDetails.getUser());
-            return ResponseEntity.ok().body("보드가 삭제되었습니다.");
-        }
+        return ResponseEntity.ok(reponseDto);
     }
+
+    @GetMapping("/boardList")
+    public String boardListView(Model model) {
+        return "/board/boardList";
+    }
+
+    @GetMapping("/boardTest")
+    public String boardTestView(Model model) {
+        return "/board/boardTest";
+    }
+
+    //보드 삭제
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<?> deleteBoard(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                         @PathVariable Long boardId) {
+        boardService.deleteBoard(boardId, userDetails.getUser());
+        return ResponseEntity.ok().body("보드가 삭제되었습니다.");
+    }
+}
