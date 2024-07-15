@@ -69,10 +69,6 @@ public class BoardService {
         if (!board.getUser().getId().equals(user.getId()) || !board.getUser().getId().equals(guest.getUser().getId())) {
             throw new CustomException(ErrorType.BOARD_ACCESS_FORBIDDEN);
         }
-//       Todo : Invite 기능구현 후 Test
-//        if (invite.getUser().getUserRole().equals(UserRole.USER) && !board.getUser().equals(invite.getUser())) {
-//            throw new CustomException(ErrorType.BOARD_ACCESS_FORBIDDEN);
-//        }
         return board;
     }
 
@@ -101,27 +97,11 @@ public class BoardService {
         Board board = boardRepository.findById(boardId).orElseThrow(()
                 -> new CustomException(ErrorType.NOT_FOUND_BOARD));
         //userRole이 MANAGER인지 검증
-         checkUserRole(user);
+        checkUserRole(user);
         if (!board.getUser().getAccountId().equals(user.getAccountId())) {
             throw new CustomException(ErrorType.BOARD_ACCESS_FORBIDDEN);
         }
         boardRepository.delete(board);
-    }
-
-    // 유저초대
-    public Board inviteGuest(User user, Long invitedUserId, Long boardId) {
-        User inviteUser = userRepository.findById(invitedUserId).orElseThrow(
-                () -> new CustomException(ErrorType.NOT_FOUND_USER));
-        Board board = boardRepository.findById(boardId).orElseThrow(()
-                -> new CustomException(ErrorType.NOT_FOUND_BOARD));
-        checkUserId(user, board);
-        //초대된 유저인지 확인
-        if (guestRepository.existsByUserId(invitedUserId)) {
-            throw new CustomException(ErrorType.DUPLICATE_INVITE_USER);
-        }
-        Guest guest = new Guest(inviteUser, board);
-        guestRepository.save(guest);
-        return board;
     }
 
     //UserRole 이 Manager 인지 검증하는 로직
